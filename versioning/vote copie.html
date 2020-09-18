@@ -1,0 +1,378 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index, follow" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
+<link rel="stylesheet" href="custom.css"> 
+
+<title>Détail vote Constituante</title>
+
+<!------------------------
+
+Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe x par "groups"
+
+----------------->
+
+</head>
+<body>
+
+<div class="header">
+  <div class="back"><a class="link" href="index.html"> &lt; Retour à la liste des votes</a></div>
+</div>
+
+<div class="container">
+
+<h1 id="affair"></h1>
+
+<div id="vote-metadata">
+
+</div>
+
+
+
+            <div id="pd-vote-bar">
+            	 <!-- Color Bar -->
+                <div class="span12 pd-vb-bar">
+                    <!-- Green Yes Bar -->
+                    <div id="pd-vb-yes" class="" style="width: 46%;">
+                    </div>
+                    <div id="pd-vb-abstain" class="text-center" style="width: 1%;">
+                    </div>
+                    <!-- Red No Bar -->
+                    <div id="pd-vb-no" class="" style="width: 53%;">
+                    </div>
+                </div>
+                <div class="clearfix"> </div>
+
+                <!-- Text Bar -->
+                <div class="">
+                    <!-- Green Yes Bar -->
+                    <div id="pd-vb-yes-text" class="pd-vb-text" style="width: 33.3%; visibility: visible;">
+                        <div class="pd-vb-text-yes pd-color-yes">
+                            OUI
+                        </div>
+                        <div class="pd-vb-text-yes-numbers">
+                            <ul class="unstyled pd-vb-numbers pd-color-yes">
+                                <li class="pd-vb-yes-percent">45.9%</li>
+                                <li class="pd-vb-yes-number">85</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Gray Abstain Bar -->
+                    <div id="pd-vb-abstain-text" class="text-center pd-vb-text" style="width: 33.3%; visibility: visible;">
+                        <div class="pd-vb-text-abstain-container">
+                            <div class="pd-vb-text-abstain pd-color-abstain">
+                                ABST
+                            </div>
+                            <div class="pd-vb-text-yes-numbers">
+                                <ul class="unstyled pd-vb-numbers pd-color-abstain">
+                                    <li class="pd-vb-abstain-percent">1.1%</li>
+                                    <li class="pd-vb-abstain-number" class="pull-left">2</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Red No Bar -->
+                    <div id="pd-vb-no-text" class="pd-vb-text" style="width: 33.3%; visibility: visible;">
+                        <div class="pd-vb-text-no pd-color-no text-left">
+                            NON
+                        </div>
+                        <div class="pd-vb-text-no-numbers pd-color-no">
+                            <ul class="unstyled pd-vb-numbers pull-right">
+                                <li class="pd-vb-no-percent">53.0%</li>
+                                <li class="pd-vb-no-number">98</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"> </div>
+
+
+
+
+                <div>
+                  <div id="pd-vb-sign-yes" class="span6 text-left">Signification du oui: «Proposition de la majorité (ne pas donner suite)»</div>
+                  <div id="pd-vb-sign-no" class="span6 text-right">Signification du non: «Proposition de la minorité Funiciello (donner suite)»</div>
+                </div>
+                <div class="clearfix"> </div>
+
+                <!-- details -->
+                <div id="pd-vb-details-container">
+                  <div id="pd-vb-sign-yes-details" class="span6 text-left"></div>
+                  <div id="pd-vb-sign-no-details" class="span6 text-right"></div>
+                </div>
+                <div class="clearfix"> </div>
+
+            </div>
+       	
+<h2>Vote des groupes</h2>
+	<div id="details-party"></div>
+
+
+<h2 class="pd-color-yes"><span class="title-detail pd-vb-yes-number"></span> ont voté OUI </h2>
+<table class="details" id="details-yes"></table>
+
+<h2 class="pd-color-no"><span class="title-detail pd-vb-no-number"></span> ont voté NON </h2>
+<table class="details" id="details-no"></table>
+
+<h2 class="pd-color-abstain"><span class="title-detail pd-vb-abstain-number"></span> se sont abstenu·e·s </h2>
+<table class="details" id="details-abstain"></table>
+
+<h2 class="pd-color-abstain"><span class="title-detail pd-vb-novote-number"></span> n'ont pas voté </h2>
+<table class="details" id="details-novote"></table>
+
+<div></div>
+
+<div class="footer">
+  <div><a id="download" class="link" href="">Télécharger les données de vote</a></div>
+  <div>Réalisé par Florian Evéquoz, 2020</div>
+</div>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    
+
+<script>
+
+/****************************************************************/
+
+//AFFAIRVOTEID = "20200904113904"
+
+//20200903154222
+
+const urlParams = new URLSearchParams(window.location.search);
+const AFFAIRVOTEID = urlParams.get('affairVoteId');
+const csvMetadataFile = "votes/All_votes_metadata_edited.csv"
+//const csvMetadataFile = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTEAb7WIEtHEJQcI48X-0hrtyVGk7qs5Jvd_NyCsEMqbxRTM5b0kSV3vnffaGUHQ1pxJ7hnwateoi9b/pub?gid=0&single=true&output=csv"
+const csvVoteFile = "votes/"+AFFAIRVOTEID+".csv"
+
+// valeur du vote dans fichier CSV
+const VOTE_OUI = "Oui/Ja"
+const VOTE_NON = "Non/Nein"
+const VOTE_ABST = "Abst./Enth."
+const VOTE_NOVOTE = "Aucun/Keine"
+
+// Valable seulement pour Constituante ! Partis dans l'ordre droite-gauche pour graphique
+const partisOrder = [
+	"SVPO",
+	"UDC",
+	"VLR",
+	"PDC",
+	"CVPO",
+	"CSPO",
+	"AC",
+	"ZUK-VS",
+	"AdG",
+	"LES VERTS"
+]
+
+//console.log(urlParams)
+
+d3.csv(csvMetadataFile).then(d => loadMetadata(d))   ////// FIXME !!!!
+d3.csv(csvVoteFile).then(d => chart(d, function(v){ v.group }))
+
+var data
+
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 10, bottom: 30, left: 20},
+    width = 500 - margin.left - margin.right,
+    height = 200 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#details-party")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+// Charger fichier de metadata et setter les données du vote + résultat global
+function loadMetadata(d) {
+
+	var vote = d.filter(dd => dd.affairVoteId == AFFAIRVOTEID)[0]
+
+  d3.select("h1#affair").text(vote.affair)
+
+  //console.log(vote)
+
+  /* Download */
+  d3.select("#download").attr("href",csvVoteFile);
+
+  /* Métadonnées (titre, label, etc.) */
+  var meta = d3.select("#vote-metadata")
+  meta.append("div").text(vote.section)
+  meta.append("div").text(vote.startTime)
+  meta.append("div").attr("class","label").text("Vote: "+vote.label)
+
+	/* Signification oui-non */
+  d3.select("#pd-vb-sign-yes-details").html(vote.meaningYesText)
+  d3.select("#pd-vb-sign-no-details").html(vote.meaningNoText)
+	d3.select("#pd-vb-sign-yes").text("Signification du oui : " + (vote.meaningYesText ? "" : ("'"+vote.meaningYes) +"'"))
+	d3.select("#pd-vb-sign-no").text("Signification du non : " + (vote.meaningNoText ? "" : ("'"+vote.meaningNo) +"'"))
+
+	/* Résultat général */
+	total = 1.0 * (parseInt(vote.numAbst) + parseInt(vote.numYes) + parseInt(vote.numNo))
+	//console.log(total)
+	values = {
+		"yesPercent":100*(vote.numYes/total),
+		"noPercent":100*(vote.numNo/total),
+		"abstainPercent":100*(vote.numAbst/total),
+		"yesNum":vote.numYes,
+		"noNum":vote.numNo,
+		"abstainNum":vote.numAbst
+	}
+
+	for (var v of ["yes","no","abstain"]) {
+		d3.select("#pd-vb-"+v).style("width",values[v+"Percent"]+"%")
+		d3.selectAll(".pd-vb-"+v+"-percent").text(Math.round(values[v+"Percent"]*10)/10+"%")
+		d3.selectAll(".pd-vb-"+v+"-number").text(values[v+"Num"])
+		//console.log("passé! "+vote)
+	}
+
+	d3.select(".pd-vb-novote-number").text(130-total)
+
+	//console.log(values)
+
+}
+
+
+function chart(data, groupByFunc) {
+
+	//data = d;
+
+/* chart with votes for each party */
+
+	//wrangle data to get number of yes/no/abst per group
+	n = d3.nest()
+		.key(groupByFunc)
+		.key(d => d.vote)
+		.rollup(l => l.length)
+		.entries(data)
+
+	tab = []
+	n.forEach(t => {
+		_group = t.key;
+		_yes = 0;
+		_no = 0;
+		_abst = 0;
+		t.values.forEach(tt => {
+			if (tt.key == VOTE_NON)
+				_no = tt.value
+			else if (tt.key == VOTE_OUI)
+				_yes = tt.value
+			else if (tt.key == VOTE_ABST)
+				_abst = tt.value
+		})
+		tab.push({group:_group, yes:_yes, no:_no, abst:_abst, tot:(_yes+_no+_abst)})
+	})
+
+  // List of possibles votes (= keys in 'tab')
+  var votes = ["yes", "no", "abst"]
+
+  // List of groups 
+  var groups = d3.map(tab, function(d){return(d.group)}).keys()
+
+  // FIXME : ENLEVER pour Grand Conseil ??
+  if(partisOrder) {
+ 	  groups = partisOrder
+  }
+
+  // Add X axis
+  var x = d3.scaleBand()
+      .domain(groups)
+      .range([0, width])
+      .padding([0.4])
+  const xAxis = svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).tickSizeOuter(0));
+
+  xAxis.selectAll(".domain, .tick line").remove();
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, d3.max(tab.map(t => t.tot))])
+    .range([ height, 0 ]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+
+  // color palette = one color per vote
+  var color = d3.scaleOrdinal()
+    .domain(votes)
+    .range(['#5da13c','#ce4141','#555'])
+
+  //stack the data? --> stack per vote
+  var stackedData = d3.stack().keys(votes)(tab)
+
+  // Show the bars
+  svg.append("g")
+    .selectAll("g")
+    // Enter in the stack data = loop key per key = group per group
+    .data(stackedData)
+    .enter().append("g")
+      .attr("fill", function(d) { return color(d.key); })
+      .selectAll("rect")
+      // enter a second time = loop subgroup per subgroup to add all rectangles
+      .data(function(d) { return d; })
+      .enter().append("rect")
+        .attr("x", function(d) { return x(d.data.group); })
+        .attr("y", function(d) { return y(d[1]); })
+        .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+        .attr("width",x.bandwidth())
+
+
+/* table with individual votes ! */
+	fillTable("#details-yes", data.filter(d => d.vote==VOTE_OUI))
+	fillTable("#details-no", data.filter(d => d.vote==VOTE_NON))
+	fillTable("#details-abstain", data.filter(d => d.vote==VOTE_ABST))
+	fillTable("#details-novote", data.filter(d => d.vote==VOTE_NOVOTE))
+
+
+// TODO
+
+}
+
+function fillTable(tableId, data) {
+	var table = d3.select(tableId);
+	table.attr("class", "stripe compact")
+
+	//sort by parti
+	//data = data.sort((a, b) => (a.group > b.group));
+  
+	var thead = table.append("thead").append("tr");
+		thead.append("th").text("Nom");
+		thead.append("th").text("Groupe");
+		thead.append("th").html("Vote");
+
+	//create rows based on data
+	var tbody = table.append("tbody");
+	var rows = tbody.selectAll("tr")
+		.data(data)
+		.enter().append("tr");
+	var names = rows.append("td").text(d => d.name);
+	var partis = rows.append("td").text(d => d.group);
+	var votes = rows.append("td").text(d => d.vote);
+
+	$(tableId).DataTable({
+		"paging":   false,
+        "info":     false,
+        "searching": 	false,
+        "order": [[ 1, "asc" ]],
+        "oLanguage": {
+          "sSearch": "Rechercher:"
+        }
+    });
+}
+
+
+
+
+</script>
+</body>
+</html>

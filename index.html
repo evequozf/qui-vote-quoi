@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index, follow" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
+<title>Votes de la Constituante - Valais</title>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
+<link rel="stylesheet" href="custom.css"> 
+
+<!------------------------
+
+Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe x par "groups"
+
+----------------->
+
+
+</head>
+<body>
+<div class="container">
+
+
+<h1>Qui vote quoi ? 🗳️ <br/><span style="font-size: smaller">Résultats des votes de la Constituante valaisanne</span></h1>
+
+<p><b>La Constituante valaisanne prend ses premières décisions en vue d'écrire la future Constitution cantonale. Mais quels sujets discute-t-elle ? Lesquels font débat ? Quels sont les résultats des votes ? Et qui vote comment ?</b></p>
+
+<p>En toute transparence, la Constituante publie les votes nominatifs sur son site web. Cela dit, ceux-ci ne sont pas facilement compréhensibles et exploitables par le grand public. C'est pour cela que la page sur laquelle vous vous trouvez existe. Elle vise à offrir une vue simplifiée des décisions prises, afin de stimuler le débat public et contribuer à la transparence des débats et des votes. La Constituante ne doit pas fonctionner en vase clos mais impliquer la population valaisanne dans son ensemble !</p>
+
+<h2>Quelques votes importants (pour tout le monde !)</h2>
+<p>
+	Voici une liste de quelques sujets importants traités jusqu'ici. En cliquant sur chacun d'eux, vous accédez à une page décrivant les détails de l'objet soumis au vote et le résultat. Les votes nominatifs y sont également rappelés.
+</p>
+<ul id="votes-importants">
+	<!--
+	<li><a class="link" href="vote.html?affairVoteId=20200903122550">Reconnaissance des collectivités religieuses</a></li>
+	<li><a class="link" href="vote.html?affairVoteId=20200903122812">Financement des collectivités religieuses</a></li>
+	<li><a class="link" href="vote.html?affairVoteId=20200903155023">Amendement général Commission 2</a></li>
+	<li><a class="link" href="vote.html?affairVoteId=20200903161538">Transparence du financement des partis politiques</a></li>
+	<li><a class="link" href="vote.html?affairVoteId=20200904113904">Droit de vote à 16 ans</a></li>
+	<li>...</li>
+	-->
+</ul>
+
+<h2>Tous les votes (pour les passioné·e·s !)</h2>
+
+<p> Le tableau ci-dessous présente la totalité des votes effectués par la Constituante. Il s'adresse à vous qui êtes des personnes averties, passionnées ou curieuses ! N'hésitez pas à nous signaler des conclusions intéressantes que vous pourriez tirer de ces votes, ou à nous indiquer quel vote vous semble important et devrait être mis en lumière. Profitons ensemble de notre intelligence collective !</p>
+
+<table id="list-votes"></table>
+
+<div class="footer">Réalisé par Florian Evéquoz, 2020</div>
+
+</div>
+
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    
+
+<script>
+
+/****************************************************************/
+
+const csvMetadataFile = "votes/Tous votes Constituante - Sheet1.csv"
+//const csvMetadataFile = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTEAb7WIEtHEJQcI48X-0hrtyVGk7qs5Jvd_NyCsEMqbxRTM5b0kSV3vnffaGUHQ1pxJ7hnwateoi9b/pub?gid=0&single=true&output=csv"
+
+const googleDocCallback = function () { return true; };
+
+d3.csv(csvMetadataFile).then(d => loadMetadata(d))   ////// FIXME !!!!
+
+var fulldata
+
+// Charger fichier de metadata et setter les données du vote + résultat global
+function loadMetadata(data) {
+
+  fulldata = data
+
+  var tableId = "#list-votes"
+
+  var table = d3.select(tableId);
+  table.attr("class", "stripe compact");
+
+  var thead = table.append("thead").append("tr");
+    thead.append("th").text("Séance");
+    thead.append("th").text("Principe");
+    thead.append("th").text("Vote");
+    thead.append("th").text("Résultat");
+    thead.append("th").text("Date et heure");
+
+  //create rows based on data
+  var tbody = table.append("tbody");
+  var rows = tbody.selectAll("tr")
+    .data(data)
+    .enter().append("tr");
+  rows.append("td").append("a")
+  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.text(d => d.section);
+  rows.append("td").append("a")
+  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.text(d => d.affair);
+  rows.append("td").append("a")
+  	.attr("class","link")
+  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.text(d => d.label);
+  votes = rows.append("td").append("a")
+  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId);
+  rows.append("td").append("a")
+  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.text(d => d.startTime);
+
+  // résultat du vote
+  votes.text(d => {
+  	var total = parseInt(d.numAbst) + parseInt(d.numYes) + parseInt(d.numNo)
+	var yesPercent = Math.round(100*(d.numYes/total)*10)/10
+	var noPercent = Math.round(100*(d.numNo/total)*10)/10
+  	var txt = d.warning ? "⚠️" : "";
+  	if (parseInt(d.numYes) > parseInt(d.numNo)) 
+  		txt += "OUI ("+yesPercent+"%)"
+  	else 
+  		txt += "NON ("+noPercent+"%)"
+  	return txt;
+  });
+
+  votes.attr("class", d=> {
+  	if (parseInt(d.numYes) > parseInt(d.numNo)) 
+  		return "pd-color-yes"
+  	else 
+  		return "pd-color-no"
+  })
+
+  $(tableId).DataTable({
+    "paging":   false,
+    "searching":  true,
+    "info": false,
+    "order": [[ 4, "asc" ]],
+    "oLanguage": {
+          "sSearch": "Rechercher:"
+        }
+    });
+
+  /* votes importants */
+  d3.select("#votes-importants").selectAll("li")
+  	.data(data.filter(v => v.affair))
+  	.enter()
+  	.append("li")
+  		.append("a")
+  		.attr("class","link")
+  		.attr("href",v => "vote.html?affairVoteId="+v.affairVoteId)
+  		.text(v => v.affair)	
+}
+
+
+</script>
+</body>
+</html>
