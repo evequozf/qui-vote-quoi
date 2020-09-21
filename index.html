@@ -6,10 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="index, follow" />
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
-<title>Votes de la Constituante - Valais</title>
+<title>Votes de la Constituante valaisanne</title>
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
 <link rel="stylesheet" href="custom.css"> 
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
 <!------------------------
 
@@ -20,16 +21,21 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 
 </head>
 <body>
+
+<div class="banner-image">
+  <div class="banner-text">
+    <!-- <h1>🗳️ <span class="smallcaps">Qui vote quoi ? </span>🗳️</h1> -->
+    <h1>QUI VOTE QUOI ?<br/><span style="font-size: smaller;">Résultats des votes de la Constituante valaisanne</span></h1>
+  </div>
+</div>
+
 <div class="container">
 
+<p><b>La Constituante valaisanne prend ses premières décisions en vue d'écrire la future Constitution cantonale. Mais quels sujets discute-t-elle ? Lesquels font débat ? Quels sont les résultats des votes ? Et qui vote quoi ?</b></p>
 
-<h1>Qui vote quoi ? 🗳️ <br/><span style="font-size: smaller">Résultats des votes de la Constituante valaisanne</span></h1>
+<p>En toute transparence, la Constituante publie les votes nominatifs sur son site web. Mais ceux-ci ne sont pas facilement accessibles au grand public. C'est pour cela que la page sur laquelle vous vous trouvez existe. Elle vise à faciliter l'accès de tout un chacun aux décisions prise par l'assemblée. La Constituante ne doit pas fonctionner en vase clos mais impliquer la population valaisanne dans son ensemble. La transparence des débats et des votes est une condition essentielle au débat démocratique.</p>
 
-<p><b>La Constituante valaisanne prend ses premières décisions en vue d'écrire la future Constitution cantonale. Mais quels sujets discute-t-elle ? Lesquels font débat ? Quels sont les résultats des votes ? Et qui vote comment ?</b></p>
-
-<p>En toute transparence, la Constituante publie les votes nominatifs sur son site web. Cela dit, ceux-ci ne sont pas facilement compréhensibles et exploitables par le grand public. C'est pour cela que la page sur laquelle vous vous trouvez existe. Elle vise à offrir une vue simplifiée des décisions prises, afin de stimuler le débat public et contribuer à la transparence des débats et des votes. La Constituante ne doit pas fonctionner en vase clos mais impliquer la population valaisanne dans son ensemble !</p>
-
-<h2>Quelques votes importants (pour tout le monde !)</h2>
+<h2>Quelques votes importants</h2>
 <p>
 	Voici une liste de quelques sujets importants traités jusqu'ici. En cliquant sur chacun d'eux, vous accédez à une page décrivant les détails de l'objet soumis au vote et le résultat. Les votes nominatifs y sont également rappelés.
 </p>
@@ -50,7 +56,9 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 
 <table id="list-votes"></table>
 
-<div class="footer">Réalisé par Florian Evéquoz, 2020</div>
+<div class="footer">
+  <div>Réalisé par Florian Evéquoz, 2020. Photo d'entête, Patrick Hofer, Flickr, CC-BY.</div>
+</div>
 
 </div>
 
@@ -142,14 +150,20 @@ function loadMetadata(data) {
     });
 
   /* votes importants */
-  d3.select("#votes-importants").selectAll("li")
+  var lis = d3.select("#votes-importants").selectAll("li")
   	.data(data.filter(v => v.affair))
   	.enter()
   	.append("li")
-  		.append("a")
-  		.attr("class","link")
+      .append("a")
+  		//.attr("class","nolink")
   		.attr("href",v => "vote.html?affairVoteId="+v.affairVoteId)
-  		.text(v => v.affair)	
+      .text(v => v.affair)
+
+  // <div id="test" style="content: url(test.svg); width: 200px; height: 200px;"></div>
+
+  /* hr in between */
+  //  $("<p>trux</p>").inserAfter("ul#votes-importants li") ;
+  $( "<hr/>" ).insertAfter( "ul#votes-importants li:not(:last-child)" );
 }
 
 

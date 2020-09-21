@@ -1,22 +1,122 @@
 body {
-	font-family:Arial,Helvetica,sans-serif;
+	font-family:'Open Sans', Arial,Helvetica,sans-serif;
 	color: #555;
+	height: 100%;
+	margin: 0;
+	padding: 0;
 }
 
-.container {
-	margin-left: 10px;
-	margin-right: auto;
+
+
+/* The hero image */
+.banner-image {
+  /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
+  //background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("img/9491252677_dc8e1caf5e_k.jpg");
+  /* Set a specific height */
+  height: 50%;
+
+  background-color: rgb(55, 173, 231);
+  //background-color: rgb(232, 111, 67);
+
+
+  /* Position and center the image to scale nicely on all screens */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  margin-bottom: 3em;
+}
+
+.banner-image:after {
+    content:"";
+    position:absolute;
+    width:100%;
+    bottom:1px;
+    z-index:-1;
+    box-shadow: 0px 0px 8px 2px #000000;
+}
+
+/* Place text in the middle of the image */
+.banner-text {
+  padding: 30px;
+  //text-align: center;
+  //position: absolute;
+  //top: 50%;
+  //left: 50%;
+  //transform: translate(-50%, -50%);
+  color: white;
+}
+
+.smallcaps {
+	font-variant: small-caps;
+} 
+
+.container, .header {
+	margin-left: 20px;
+	margin-right: 20px;
 	max-width: 980px;
 }
 
+@media (min-width: 980px) {
+  .container, .header {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 h2 {
-	margin-top: 2em;
+	//margin-top: 1em;
+}
+
+ul#votes-importants {
+	border: 1px solid #efefef;
+	padding: 0px;
+	max-width: 500px;
+}
+
+ul#votes-importants hr {
+	border-top: 1px solid #efefef;
+	border-bottom: none;
+	border-left: none;
+	border-right: none;
+	height:0px;
+	margin:0px;
 }
 
 ul#votes-importants li {
-	padding-top:4px;
-	padding-bottom: 4px;
+	list-style-type:none;
+	display: flex;
+	//position: relative;
+	align-items: center;
+	justify-content: flex-start;
+	height: 48px;
+	//padding: 0 16px;
+	overflow: hidden;
 }
+
+ul#votes-importants li:hover {
+	background-color: #eeeeff;
+	cursor: pointer;
+}
+
+ul#votes-importants li a {
+	padding: 0 16px;
+	width: 100%;
+	line-height: 48px;   /* must be equal to size of container to center vertically */
+	text-decoration: none;
+	color: inherit;
+}
+
+ul#votes-importants li a:before {
+	display: inline-block;
+	content: ' ';
+	background-image: url('img/how_to_vote-24px.svg');
+	background-size: 24px 24px;
+	height: 24px;
+	width: 24px;
+	margin-right: 16px;
+}
+
 
 table tr td a {
     display:block;
@@ -38,6 +138,10 @@ a.link:hover {
 
 table#list-votes tbody tr:hover {
 	background-color: #eeeeff !important;
+}
+
+table.dataTable {
+	margin-bottom: 32px;
 }
 
 table thead th:hover {
@@ -63,10 +167,6 @@ table tr td {
   margin-top: 14px;
   color:#aaa;
   font-size: xx-small;
-}
-
-h2 {
-	margin-top: 2em;
 }
 
 .label {
@@ -113,8 +213,8 @@ svg text.rect-label-front {
 #help {
 	//border: 1px solid #959595;
 	padding: 14px;
-	margin-top: 30px;
-	margin-bottom: 30px;
+	margin-top: 32px;
+	margin-bottom: 16px;
 	background-color: #eee;
 }
 
@@ -127,9 +227,19 @@ svg text.rect-label-front {
 }
 
 #toggle-help:hover {
-	background-color: #eee;
+	background-color: #fff;
 	cursor:pointer;
 }
+
+
+#toggle-help.alt {
+	background-color: #fff;
+}
+
+#toggle-help.alt:hover {
+	background-color: #efefef;
+}
+
 
 #warning {
 	//font-weight: bold;
@@ -139,7 +249,7 @@ svg text.rect-label-front {
 	display: none;
 	text-align: center;
 	margin-top: 30px;
-	margin-bottom: 30px;
+	margin-bottom: 16px;
 }
 
 #warning p.title {

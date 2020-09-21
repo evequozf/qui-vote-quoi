@@ -7,17 +7,25 @@
 <meta name="robots" content="index, follow" />
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
 <link rel="stylesheet" href="custom.css"> 
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
 <title>Détail vote Constituante</title>
 
 <!------------------------
 
-Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe x par "groups"
+Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe x par "groups" ?
 
 ----------------->
 
 </head>
 <body>
+
+<div class="banner-image">
+  <div class="banner-text">
+    <!-- <h1>🗳️ <span class="smallcaps">Qui vote quoi ? </span>🗳️</h1> -->
+    <h1>QUI VOTE QUOI ?<br/><span style="font-size: smaller;">Résultats des votes de la Constituante valaisanne</span></h1>
+  </div>
+</div>
 
 <div class="header">
   <div class="back"><a class="link" href="index.html"> &lt; Retour à la liste des votes</a></div>
@@ -38,8 +46,8 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 <p>Pour accepter <span id="warning-text"></span>, il fallait voter <span class="pd-color-no">NON</span>.</p>
 </div>
 
-<span id="toggle-help">Comment interpréter ce vote?</span>
-<div id="help"><p>En votant, les membres de la Constituante expriment leur choix entre deux variantes d'un article de la future Constitution. En votant <span class="pd-color-yes">OUI</span>, on choisit l'une des deux variantes. En votant <span class="pd-color-no">NON</span>, on choisit l'autre. On peut aussi s'abstenir en votant <span class="pd-color-abstain">ABST</span>.</p><p>La signification du <span class="pd-color-yes">OUI</span> et du <span class="pd-color-no">NON</span> (en d'autres termes, la variante d'article qui correspond au <span class="pd-color-yes">OUI</span> et au <span class="pd-color-no">NON</span>) est indiquée au-dessous du résultat lorsque c'est possible. Elle est également disponible dans le <a class="link refdoc" href="">détail des articles et amendements votés</a>. La référence officielle du vote mentionnée au-dessus du résultat permet d'y retrouver l'article en question.</p></div>
+<span id="toggle-help">Comment interpréter ce vote ?</span>
+<div id="help"><p>En votant, les membres de la Constituante expriment leur choix entre deux variantes d'un article de la future Constitution. En votant <span class="pd-color-yes">OUI</span>, on choisit l'une des deux variantes. En votant <span class="pd-color-no">NON</span>, on choisit l'autre. On peut aussi s'abstenir en votant <span class="pd-color-abstain">ABST</span>.</p><p>La signification du <span class="pd-color-yes">OUI</span> et du <span class="pd-color-no">NON</span> (en d'autres termes, la variante d'article qui correspond au <span class="pd-color-yes">OUI</span> et au <span class="pd-color-no">NON</span>) est indiquée au-dessous du résultat lorsque c'est possible. Vous la trouverez aussi dans le <a class="link refdoc" href="">détail des articles et amendements votés</a>. La référence officielle du vote mentionnée au-dessus du résultat permet d'y retrouver l'article en question.</p></div>
 
 
 
@@ -49,7 +57,7 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
               <div class="clearfix"> </div>
 
                 <!-- Graduation 50% -->
-                <div class="pd-vb-bar" style="background-color:white;text-align: center;color: #aaa;margin-bottom: -8px;">50%</div>
+                <div class="pd-vb-bar" style="background-color:white;text-align: center;color: #aaa;margin-bottom: -5px;">50%</div>
                 <div class="clearfix"> </div>
 
                 <!-- Graduation 50% mark -->
@@ -157,7 +165,7 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 <div><a id="download" class="link" href="">Télécharger les données de vote</a></div>
 
 <div class="footer">
-  <div>Réalisé par Florian Evéquoz, 2020</div>
+  <div>Réalisé par Florian Evéquoz, 2020. Photo d'entête, Patrick Hofer, Flickr, CC-BY.</div>
 </div>
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -330,7 +338,9 @@ function loadMetadata(d) {
       var el = d3.select("#help");
       var visible = !(el.node().offsetParent === null); // check if element is visible or not
       d3.select("#help").style("display", visible ? "none" : "block");
-      d3.select("#toggle-help").text(visible ?  "Comment interpréter ce vote ?" : "J'ai compris !")
+      d3.select("#toggle-help")
+        .attr("class", visible ?  null : "alt")
+        .text(visible ?  "Comment interpréter ce vote ?" : "J'ai compris !");
    })
 
 	//console.log(values)
