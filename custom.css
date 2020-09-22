@@ -1,3 +1,20 @@
+/*
+Colors:
+
+base blue : 37ADE7 rgb(55,173,231)
+pale blue : 57C7FF rgb(87,199,255)
+orange (complementary) : E8774F;
+green (complementary) : 2CE8C1;
+
+original
+green 5da13c
+red ce4141
+highlight: eeeeff;
+
+*/
+
+
+
 body {
 	font-family:'Open Sans', Arial,Helvetica,sans-serif;
 	color: #555;
@@ -9,7 +26,7 @@ body {
 
 
 /* The hero image */
-.banner-image {
+.banner-image, .footer {
   /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
   //background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("img/9491252677_dc8e1caf5e_k.jpg");
   /* Set a specific height */
@@ -25,6 +42,12 @@ body {
   background-size: cover;
   position: relative;
   margin-bottom: 3em;
+}
+
+.footer {
+	color: white;
+	padding: 34px;
+	margin-bottom: 0;
 }
 
 .banner-image:after {
@@ -89,9 +112,9 @@ ul#votes-importants li {
 	//position: relative;
 	align-items: center;
 	justify-content: flex-start;
-	height: 48px;
+	min-height: 48px;
 	//padding: 0 16px;
-	overflow: hidden;
+	//overflow: hidden;
 }
 
 ul#votes-importants li:hover {
@@ -165,8 +188,8 @@ table tr td {
 
 .footer {
   margin-top: 14px;
-  color:#aaa;
-  font-size: xx-small;
+  //color:#aaa;
+  font-size: smaller;
 }
 
 .label {
