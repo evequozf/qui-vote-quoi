@@ -3,6 +3,7 @@ Colors:
 
 base blue : 37ADE7 rgb(55,173,231)
 pale blue : 57C7FF rgb(87,199,255)
+alt blue : 7FC8EC;
 orange (complementary) : E8774F;
 green (complementary) : 2CE8C1;
 
@@ -118,7 +119,7 @@ ul#votes-importants li {
 }
 
 ul#votes-importants li:hover {
-	background-color: #eeeeff;
+	background-color: #7FC8EC;
 	cursor: pointer;
 }
 
@@ -156,11 +157,11 @@ a.link {
 }
 
 a.link:hover {
-	background-color: #eeeeff;
+	background-color: #7FC8EC;
 }
 
 table#list-votes tbody tr:hover {
-	background-color: #eeeeff !important;
+	background-color: #7FC8EC !important;
 }
 
 table.dataTable {
@@ -168,7 +169,7 @@ table.dataTable {
 }
 
 table thead th:hover {
-	background-color: #eeeeff;
+	background-color: #7FC8EC;
 }
 
 table tr td {
@@ -289,7 +290,7 @@ svg text.rect-label-front {
 
 .info:hover {
 	cursor: pointer;
-	background-color: #eeeeff;
+	background-color: #7FC8EC;
 }
 
 
