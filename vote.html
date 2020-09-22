@@ -164,10 +164,12 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 <div class="vote-metadata lower"></div>
 <div><a id="download" class="link" href="">Télécharger les données de vote</a></div>
 
+</div>
 <div class="footer">
-  <div>Réalisé par Florian Evéquoz, 2020</div>
-  <!--<div>Photo d'entête, Patrick Hofer, Flickr, CC-BY</div>-->
-  <div>Code source <a href="https://github.com/evequozf/qui-vote-quoi" class="link">https://github.com/evequozf/qui-vote-quoi</a></div>
+  <div style="float:right"><img src="img/logo-blanc.png" width="64px" height="64px"/></div>
+    <div>Réalisé par Florian Evéquoz, 2020</div>
+    <!--<div>Photo d'entête, Patrick Hofer, Flickr, CC-BY</div>-->
+    <div>Code source <a href="https://github.com/evequozf/qui-vote-quoi" class="link">https://github.com/evequozf/qui-vote-quoi</a></div>
 </div>
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -255,9 +257,10 @@ d3.csv(csvVoteFile).then(d => {
 
 var data
 
+
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 10, bottom: 50, left: 20},
-    width = 450 - margin.left - margin.right,
+    width = 400 - margin.left - margin.right,   // 460 ok screen, 380 portable
     height = 200 - margin.top - margin.bottom;
 
 
