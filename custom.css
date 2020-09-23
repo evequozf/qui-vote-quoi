@@ -93,6 +93,8 @@ h2 {
 }
 
 ul#votes-importants {
+	margin-top: 2em;
+	margin-bottom: 2em;
 	border: 1px solid #efefef;
 	padding: 0px;
 	max-width: 500px;
