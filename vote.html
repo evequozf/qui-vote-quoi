@@ -15,6 +15,8 @@
 
 Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe x par "groups" ?
 
+ajouter voteDescription=true
+
 ----------------->
 
 </head>
@@ -122,8 +124,8 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 
                 <!-- Significations -->
                 <div id="pd-vb-details-container">
-                  <div id="pd-vb-sign-yes" class="span6 text-left pd-color-yes">Signification du oui: «Proposition de la majorité (ne pas donner suite)»</div>
-                  <div id="pd-vb-sign-no" class="span6 text-right pd-color-no">Signification du non: «Proposition de la minorité quelque chose (donner suite)»</div>
+                  <div id="pd-vb-sign-yes" class="span6 text-left pd-color-yes">Voter OUI signifie :</div>
+                  <div id="pd-vb-sign-no" class="span6 text-right pd-color-no">Voter NON signifie :</div>
                   <div class="clearfix"> </div>
 
                   <div id="pd-vb-sign-yes-details" class="span6 text-left pd-color-yes"></div>
@@ -187,6 +189,7 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 
 const urlParams = new URLSearchParams(window.location.search);
 const AFFAIRVOTEID = urlParams.get('affairVoteId');
+const VOTEDESCRIPTION = urlParams.get('voteDescription');
 const csvMetadataFile = "votes/Tous votes Constituante - Sheet1.csv"
 //const csvMetadataFile = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTEAb7WIEtHEJQcI48X-0hrtyVGk7qs5Jvd_NyCsEMqbxRTM5b0kSV3vnffaGUHQ1pxJ7hnwateoi9b/pub?gid=0&single=true&output=csv"
 const csvVoteFile = "votes/"+AFFAIRVOTEID+".csv"
@@ -271,21 +274,39 @@ function loadMetadata(d) {
 	var vote = d.filter(dd => dd.affairVoteId == AFFAIRVOTEID)[0]
 
   /* Header page title */
-  if(vote.affair) {
-    window.document.title = vote.affair;
-  } else if (vote.label) {
+  if (vote.label) {
+    /* Header html page title */
     window.document.title = vote.label;
+    /* Page title */
+    d3.select("h1#affair").text(vote.label)
   }
 
-  /* Page title */
-  d3.select("h1#affair").text(vote.affair)
+  if (VOTEDESCRIPTION) {
+    /* Header html page title */
+    if(vote.affair) {
+      window.document.title = vote.affair;
+    } 
+    /* Page title */
+    d3.select("h1#affair").text(vote.affair)
+    /* Note */
+    d3.select("#note").html(vote.note);
+    /* Mise en garde, si le vote est contre-intuitif */
+    if (vote.warning) {
+      d3.select("#warning").style("display","block");
+      d3.select("#warning-text").html(vote.warning);
+    }
+    /* Signification oui-non - amendement complet */
+    d3.select("#pd-vb-sign-yes-details").html(vote.meaningYesText)
+    d3.select("#pd-vb-sign-no-details").html(vote.meaningNoText)
 
-  //console.log(vote)
+    /* Signification oui-non */
+    d3.select("#pd-vb-sign-yes").text("Voter OUI signifie : " + (vote.meaningYesText ? "" : ("'"+vote.meaningYes) +"'"))
+    d3.select("#pd-vb-sign-no").text("Voter NON signifie : " + (vote.meaningNoText ? "" : ("'"+vote.meaningNo) +"'"))
+  }
 
-  /* Note */
-  d3.select("#note").html(vote.note);
+  
 
-  /* Métadonnées (titre, label, etc.) */
+  /* Métadonnées officielles (titre, label, etc.) */
   var meta = d3.selectAll(".vote-metadata")
   meta.append("div").text("Référence officielle du vote: ")
     .append("span").attr("class","label").text("\""+vote.label+"\"")
@@ -304,18 +325,6 @@ function loadMetadata(d) {
 
   /* Download link of raw results */
   d3.select("#download").attr("href",csvVoteFile);
-  
-  /* Mise en garde, si le vote est contre-intuitif */
-  if (vote.warning) {
-    d3.select("#warning").style("display","block");
-    d3.select("#warning-text").html(vote.warning);
-  }
-  
-	/* Signification oui-non */
-  d3.select("#pd-vb-sign-yes-details").html(vote.meaningYesText)
-  d3.select("#pd-vb-sign-no-details").html(vote.meaningNoText)
-	d3.select("#pd-vb-sign-yes").text("Voter OUI signifie : " + (vote.meaningYesText ? "" : ("'"+vote.meaningYes) +"'"))
-	d3.select("#pd-vb-sign-no").text("Voter NON signifie : " + (vote.meaningNoText ? "" : ("'"+vote.meaningNo) +"'"))
 
 	/* Résultat général */
 	total = 1.0 * (parseInt(vote.numAbst) + parseInt(vote.numYes) + parseInt(vote.numNo))

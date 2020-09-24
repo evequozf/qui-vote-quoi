@@ -93,11 +93,11 @@ function loadMetadata(data) {
   table.attr("class", "stripe compact");
 
   var thead = table.append("thead").append("tr");
-    thead.append("th").text("Séance");
-    thead.append("th").text("Principe");
-    thead.append("th").text("Vote");
-    thead.append("th").text("Résultat");
-    thead.append("th").text("Date et heure");
+  thead.append("th").text("Séance");
+  //thead.append("th").text("Principe");  // Masquer nom de l'affaire
+  thead.append("th").text("Vote");
+  thead.append("th").text("Résultat");
+  thead.append("th").text("Date et heure");
 
   //create rows based on data
   var tbody = table.append("tbody");
@@ -107,9 +107,11 @@ function loadMetadata(data) {
   rows.append("td").append("a")
   	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
   	.text(d => d.section);
+  /*                                      // Masquer nom de l'affaire
   rows.append("td").append("a")
   	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
   	.text(d => d.affair);
+  */
   rows.append("td").append("a")
   	.attr("class","link")
   	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
@@ -125,8 +127,9 @@ function loadMetadata(data) {
   	var total = parseInt(d.numAbst) + parseInt(d.numYes) + parseInt(d.numNo)
 	var yesPercent = Math.round(100*(d.numYes/total)*10)/10
 	var noPercent = Math.round(100*(d.numNo/total)*10)/10
-  	var txt = d.warning ? "⚠️" : "";
-  	if (parseInt(d.numYes) > parseInt(d.numNo)) 
+  	var txt = "";
+    //txt = d.warning ? "⚠️" : "";                   // Masquer si vote contre-intuitif
+    if (parseInt(d.numYes) > parseInt(d.numNo)) 
   		txt += "OUI ("+yesPercent+"%)"
   	else 
   		txt += "NON ("+noPercent+"%)"
@@ -141,14 +144,23 @@ function loadMetadata(data) {
   })
 
   $(tableId).DataTable({
-    "paging":   false,
+    "paging":   true,
     "searching":  true,
     "info": false,
-    "order": [[ 4, "asc" ]],
+    "order": [[ 3, "asc" ]],
     "oLanguage": {
-          "sSearch": "Rechercher:"
+          "sLengthMenu": "Afficher _MENU_ votes",
+          "sZeroRecords": "Aucun vote ne correspond à votre recherche",
+          "sSearch": "Rechercher:",
+          "oPaginate": {
+            "sFirst": "Première page", // This is the link to the first page
+            "sPrevious": "Page précédente", // This is the link to the previous page
+            "sNext": "Page suivante", // This is the link to the next page
+            "sLast": "Dernière page" // This is the link to the last page
+          }
         }
     });
+
 
   /* votes importants */
   var lis = d3.select("#votes-importants").selectAll("li")
@@ -157,13 +169,10 @@ function loadMetadata(data) {
   	.append("li")
       .append("a")
   		//.attr("class","nolink")
-  		.attr("href",v => "vote.html?affairVoteId="+v.affairVoteId)
+  		.attr("href",v => "vote.html?affairVoteId="+v.affairVoteId+"&voteDescription=true")
       .text(v => v.affair)
 
-  // <div id="test" style="content: url(test.svg); width: 200px; height: 200px;"></div>
-
-  /* hr in between */
-  //  $("<p>trux</p>").inserAfter("ul#votes-importants li") ;
+  /* hr in between list items */
   $( "<hr/>" ).insertAfter( "ul#votes-importants li:not(:last-child)" );
 }
 
