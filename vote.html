@@ -280,6 +280,9 @@ function loadMetadata(d) {
     window.document.title = vote.label;
     /* Page title */
     d3.select("h1#affair").text(vote.label)
+    /* Signification oui-non */
+    d3.select("#pd-vb-sign-yes").text("Voter OUI signifie : '"+vote.meaningYes+"'")
+    d3.select("#pd-vb-sign-no").text("Voter NON signifie : '"+vote.meaningNo+"'")
   }
 
   if (VOTEDESCRIPTION) {

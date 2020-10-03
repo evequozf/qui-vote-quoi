@@ -41,12 +41,13 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 <p>
 	Voici une liste de sujets importants traités jusqu'ici. En cliquant sur chacun d'eux, vous accédez à une page décrivant les détails de l'objet soumis au vote et le résultat.</p>
 
-<ul id="votes-importants">
-	<!--
+<div id="votes-importants-container"></div>
+<!--
+<ul class="votes-importants">
 	<li><a class="link" href="vote.html?affairVoteId=20200903122550">Reconnaissance des collectivités religieuses</a></li>
 	<li><a class="link" href="vote.html?affairVoteId=20200903122812">Financement des collectivités religieuses</a></li>
-	-->
 </ul>
+-->
 
 <h2>Tous les votes (pour les passionné·e·s !)</h2>
 
@@ -161,19 +162,36 @@ function loadMetadata(data) {
         }
     });
 
+  // votes importants 
+  //fillVotesImportants("#votes-importants-container", data.filter(v => v.affair)) // tous les votes en un seul bloc
+  // une sous-section par 'section + date'
+  var sections = d3.nest().key(d => d.section).rollup().entries(data)
+  for (var i = 0; i < sections.length; i++) {
+    fillVotesImportants("#votes-importants-container", 
+      data.filter(v => (v.section==sections[i].key) && v.affair)) // fill "votes importants" with votes from a given section where "v.affair" is defined
+  }
 
-  /* votes importants */
-  var lis = d3.select("#votes-importants").selectAll("li")
-  	.data(data.filter(v => v.affair))
-  	.enter()
-  	.append("li")
+   /* hr in between list items */
+  $( "<hr/>" ).insertAfter( "ul.votes-importants li:not(:last-child)" ); //"ul#votes-importants li:not(:last-child)"
+}
+
+ /* votes importants de la table 'votes' à mettre dans le 'ul'*/
+function fillVotesImportants(containerID, votes) {
+  if(votes.length == 0) return;
+  //console.log(votes[0].startTime);
+  const utcDate = votes[0].startTime.split(" ")[0]+"T"+votes[0].startTime.split(" ")[1]+"Z" //reformat date to ISO UTC
+  const datestring = new Date(utcDate).toLocaleDateString("fr-FR", 
+    { /*weekday: 'long',*/year: 'numeric', month: 'long', day: 'numeric' }); // (jeudi) 3 septembre 2020
+  d3.select(containerID).append("h3").text(votes[0].section+" ("+datestring+")")
+  var ul = d3.select(containerID).append("ul").attr("class","votes-importants")
+  var lis = ul.selectAll("li")
+    .data(votes)
+    .enter()
+    .append("li")
       .append("a")
-  		//.attr("class","nolink")
-  		.attr("href",v => "vote.html?affairVoteId="+v.affairVoteId+"&voteDescription=true")
+      //.attr("class","nolink")
+      .attr("href",v => "vote.html?affairVoteId="+v.affairVoteId+"&voteDescription=true")
       .text(v => v.affair)
-
-  /* hr in between list items */
-  $( "<hr/>" ).insertAfter( "ul#votes-importants li:not(:last-child)" );
 }
 
 
