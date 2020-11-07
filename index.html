@@ -182,7 +182,7 @@ function fillVotesImportants(containerID, votes) {
   const utcDate = votes[0].startTime.split(" ")[0]+"T"+votes[0].startTime.split(" ")[1]+"Z" //reformat date to ISO UTC
   const datestring = new Date(utcDate).toLocaleDateString("fr-FR", 
     { /*weekday: 'long',*/year: 'numeric', month: 'long', day: 'numeric' }); // (jeudi) 3 septembre 2020
-  d3.select(containerID).append("h3").html(votes[0].section+" <br/><span class=\"date\">"+datestring+"</span>")
+  d3.select(containerID).append("h3").html("<span class=\"date\">"+datestring+"</span><br/>"+votes[0].section)
   var ul = d3.select(containerID).append("ul").attr("class","votes-importants")
   var lis = ul.selectAll("li")
     .data(votes)
