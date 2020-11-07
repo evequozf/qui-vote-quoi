@@ -77,13 +77,13 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 const csvMetadataFile = "votes/Tous votes Constituante - Sheet1.csv"
 //const csvMetadataFile = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTEAb7WIEtHEJQcI48X-0hrtyVGk7qs5Jvd_NyCsEMqbxRTM5b0kSV3vnffaGUHQ1pxJ7hnwateoi9b/pub?gid=0&single=true&output=csv"
 
-const googleDocCallback = function () { return true; };
+//const googleDocCallback = function () { return true; };
 
 d3.csv(csvMetadataFile).then(d => loadMetadata(d))   ////// FIXME !!!!
 
 var fulldata
 
-// Charger fichier de metadata et setter les données du vote + résultat global
+// Charger fichier de metadata et mettre dans datatables la liste complète des votes
 function loadMetadata(data) {
 
   fulldata = data
@@ -175,14 +175,14 @@ function loadMetadata(data) {
   $( "<hr/>" ).insertAfter( "ul.votes-importants li:not(:last-child)" ); //"ul#votes-importants li:not(:last-child)"
 }
 
- /* votes importants de la table 'votes' à mettre dans le 'ul'*/
+ /* Création liste des votes importants de la table 'votes' à mettre dans le 'ul' pour chaque 'section' dans répertoire de votes CSV*/
 function fillVotesImportants(containerID, votes) {
   if(votes.length == 0) return;
   //console.log(votes[0].startTime);
   const utcDate = votes[0].startTime.split(" ")[0]+"T"+votes[0].startTime.split(" ")[1]+"Z" //reformat date to ISO UTC
   const datestring = new Date(utcDate).toLocaleDateString("fr-FR", 
     { /*weekday: 'long',*/year: 'numeric', month: 'long', day: 'numeric' }); // (jeudi) 3 septembre 2020
-  d3.select(containerID).append("h3").text(votes[0].section+" ("+datestring+")")
+  d3.select(containerID).append("h3").html(votes[0].section+" <br/><span class=\"date\">"+datestring+"</span>")
   var ul = d3.select(containerID).append("ul").attr("class","votes-importants")
   var lis = ul.selectAll("li")
     .data(votes)

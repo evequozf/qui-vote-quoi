@@ -31,6 +31,7 @@ ajouter voteDescription=true
 
 <div class="header">
   <div class="back"><a class="link" href="index.html"> &lt; Retour à la liste des votes</a></div>
+  <div class="navigate-votes"><a class="link" id="previousVote" href="#"> &lt; Vote précédent</a> | <a class="link" id="nextVote" href="#">Vote suivant &gt; </a></div>
 </div>
 
 <div class="container">
@@ -268,11 +269,31 @@ var margin = {top: 10, right: 10, bottom: 50, left: 20},
     height = 200 - margin.top - margin.bottom;
 
 
+var fullMetadata;
 
 // Charger fichier de metadata et setter les données du vote + résultat global
 function loadMetadata(d) {
 
+  fullMetadata = d;
+
 	var vote = d.filter(dd => dd.affairVoteId == AFFAIRVOTEID)[0]
+
+  /* Link to navigate previous and next vote */
+  //"#previousVote" "#nextVote"
+  var previousVoteId = -1, nextVoteId = -1;
+  for(var i=0; i < d.length; i++) {
+    if(d[i].affairVoteId == AFFAIRVOTEID) {
+      previousVoteId = (i>0) ? d[i-1].affairVoteId : d[0].affairVoteId;
+      nextVoteId = (i<d.length-1) ? d[i+1].affairVoteId : d[d.length-1].affairVoteId;
+    }
+  }
+  d3.select("#previousVote").attr("href",window.location.pathname
+      +"?affairVoteId="+previousVoteId
+      + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
+  d3.select("#nextVote").attr("href",window.location.pathname
+      +"?affairVoteId="+nextVoteId
+      + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
+
 
   /* Header page title */
   if (vote.label) {
@@ -285,6 +306,7 @@ function loadMetadata(d) {
     d3.select("#pd-vb-sign-no").text("Voter NON signifie : '"+vote.meaningNo+"'")
   }
 
+  /* If ?voteDescription=true in URL */
   if (VOTEDESCRIPTION) {
     /* Header html page title */
     if(vote.affair) {
