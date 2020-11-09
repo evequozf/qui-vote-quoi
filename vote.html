@@ -279,14 +279,22 @@ function loadMetadata(d) {
 	var vote = d.filter(dd => dd.affairVoteId == AFFAIRVOTEID)[0]
 
   /* Link to navigate previous and next vote */
+  // WARNING ! DEPENDS ON SORTING of metadata file -> be smart to see if it's ascending or descending
   //"#previousVote" "#nextVote"
-  var previousVoteId = -1, nextVoteId = -1;
+  var previousVoteId = -1, nextVoteId = -1, tmp=0;
   for(var i=0; i < d.length; i++) {
     if(d[i].affairVoteId == AFFAIRVOTEID) {
       previousVoteId = (i>0) ? d[i-1].affairVoteId : d[0].affairVoteId;
       nextVoteId = (i<d.length-1) ? d[i+1].affairVoteId : d[d.length-1].affairVoteId;
     }
   }
+  //check if previous is really "chronologically" previous, if not, swap
+  if(previousVoteId > nextVoteId) {
+    tmp = previousVoteId; 
+    previousVoteId = nextVoteId;
+    nextVoteId = tmp
+  }
+  // set links
   d3.select("#previousVote").attr("href",window.location.pathname
       +"?affairVoteId="+previousVoteId
       + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
