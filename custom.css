@@ -221,6 +221,10 @@ table tr td {
 	color:#555;
 }
 
+.pd-win {
+	font-weight: bold;
+}
+
 .footer {
   margin-top: 14px;
   //color:#aaa;

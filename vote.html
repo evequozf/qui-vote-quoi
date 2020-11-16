@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns:xlink="http://www.w3.org/1999/xlink">
+<!DOCTYPE html>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="custom.css"> 
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
-<title>Détail vote Constituante</title>
+<title>Constituante: vote en détail</title>
 
 <!------------------------
 
@@ -379,6 +379,12 @@ function loadMetadata(d) {
 	}
 
 	d3.select(".pd-vb-novote-number").text(130-total)
+
+  if(vote.numYes > vote.numNo) {
+    d3.select(".pd-vb-text-yes").classed("pd-win",true)
+  } else {
+    d3.select(".pd-vb-text-no").classed("pd-win",true)
+  }
 
   /* Show-hide help on how to interpret vote */
   d3.select("#help").style("display","none"); 

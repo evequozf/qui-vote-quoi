@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns:xlink="http://www.w3.org/1999/xlink">
+<!DOCTYPE html>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
@@ -31,15 +31,13 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 
 <div class="container">
 
-<p><b>La Constituante valaisanne prend ses premières décisions en vue d'écrire la future Constitution cantonale. Mais quels sujets discute-t-elle ? Lesquels font débat ? Et qui vote quoi ?</b></p>
+<p><b>La Constituante valaisanne prend des décisions en vue d'écrire la future Constitution cantonale. Mais quels sujets discute-t-elle&nbsp;? Lesquels font débat&nbsp;? Et qui vote quoi&nbsp;?</b></p>
 
-<p>En toute transparence, la Constituante publie les votes nominatifs sur son site web. Mais ceux-ci ne sont pas facilement compréhensibles pour le grand public. C'est pour cela que ce site existe. Il vise à faciliter l'accès de tout un chacun aux décisions prises par l'assemblée. </p>
-
-<p>Les chiffres et documents présentés ici sont publiquement disponibles <a href="https://www.vs.ch/web/constituante/seances-plenieres" class="link">sur le site officiel de la Constituante</a>. Pour la sélection de votes importants ci-dessous, l'auteur de ce site (Florian Evéquoz, élu Appel Citoyen) a rédigé en complément une courte description informative. </p>
+<p>Ce site vise à faciliter l'accès de tout un chacun aux chiffres et documents officiels publiquement disponibles <a href="https://www.vs.ch/web/constituante/seances-plenieres" class="link">sur le site officiel de la Constituante</a>. Il a été réalisé par Florian Evéquoz (Appel Citoyen). En complément des documents officiels, ce dernier a rédigé une description informative de certains votes importants. <!--<a href="mailto:florian@quivotequoi.ch" class="link">Donnez-nous votre avis!</a></p>-->
 
 <h2>Quelques votes importants</h2>
 <p>
-	Voici une liste de sujets importants traités jusqu'ici, classés des plus récents aux plus anciens. En cliquant sur chacun d'eux, vous accédez à une page décrivant les détails de l'objet soumis au vote et le résultat.</p>
+	Voici une liste de sujets importants, classés des plus récents aux plus anciens. Cliquez sur chacun d'eux pour voir les détails et le résultat du vote.</p>
 
 <div id="votes-importants-container"></div>
 <!--
@@ -175,6 +173,7 @@ function loadMetadata(data) {
   $( "<hr/>" ).insertAfter( "ul.votes-importants li:not(:last-child)" ); //"ul#votes-importants li:not(:last-child)"
 }
 
+
  /* Création liste des votes importants de la table 'votes' à mettre dans le 'ul' pour chaque 'section' dans répertoire de votes CSV*/
 function fillVotesImportants(containerID, votes) {
   if(votes.length == 0) return;
@@ -182,8 +181,13 @@ function fillVotesImportants(containerID, votes) {
   const utcDate = votes[0].startTime.split(" ")[0]+"T"+votes[0].startTime.split(" ")[1]+"Z" //reformat date to ISO UTC
   const datestring = new Date(utcDate).toLocaleDateString("fr-FR", 
     { /*weekday: 'long',*/year: 'numeric', month: 'long', day: 'numeric' }); // (jeudi) 3 septembre 2020
-  d3.select(containerID).append("h3").html(votes[0].section+" <br/><span class=\"date\">"+datestring+"</span>")
-  var ul = d3.select(containerID).append("ul").attr("class","votes-importants")
+  d3.select(containerID)
+    .append("h3")
+    .attr("id",votes[0].section) // only works in HTML 5
+    .html(votes[0].section+" <br/><span class=\"date\">"+datestring+"</span>")
+  var ul = d3.select(containerID)
+    .append("ul")
+    .attr("class","votes-importants")
   var lis = ul.selectAll("li")
     .data(votes)
     .enter()
