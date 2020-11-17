@@ -6,18 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="index, follow" />
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
-<title>Votes de la Constituante valaisanne</title>
-
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
 <link rel="stylesheet" href="custom.css"> 
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+<title>Votes de la Constituante valaisanne</title>
 
 <!------------------------
 
 Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe x par "groups"
 
 ----------------->
-
 
 </head>
 <body>
@@ -33,11 +31,11 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 
 <p><b>La Constituante valaisanne prend des décisions en vue d'écrire la future Constitution cantonale. Mais quels sujets discute-t-elle&nbsp;? Lesquels font débat&nbsp;? Et qui vote quoi&nbsp;?</b></p>
 
-<p>Ce site vise à faciliter l'accès de tout un chacun aux chiffres et documents officiels publiquement disponibles <a href="https://www.vs.ch/web/constituante/seances-plenieres" class="link">sur le site officiel de la Constituante</a>. Il a été réalisé par Florian Evéquoz (Appel Citoyen). En complément des documents officiels, ce dernier a rédigé une description informative de certains votes importants. <!--<a href="mailto:florian@quivotequoi.ch" class="link">Donnez-nous votre avis!</a></p>-->
+<p>Ce site vise à faciliter l'accès de tout un chacun aux chiffres et documents officiels publiquement disponibles <a href="https://www.vs.ch/web/constituante/seances-plenieres" class="link">sur le site officiel de la Constituante</a>. Il a été réalisé par Florian Evéquoz (Appel Citoyen). En complément des documents officiels, Florian a rédigé une description informative de certains votes importants. <!--<a href="mailto:florian@quivotequoi.ch" class="link">Donnez-nous votre avis!</a></p>-->
 
 <h2>Quelques votes importants</h2>
 <p>
-	Voici une liste de sujets importants, classés des plus récents aux plus anciens. Cliquez sur chacun d'eux pour voir les détails et le résultat du vote.</p>
+	Voici une sélection de votes, classés des plus récents aux plus anciens, par commission. Cliquez sur l'un d'eux pour voir les détails et le résultat du vote.</p>
 
 <div id="votes-importants-container"></div>
 <!--
@@ -73,9 +71,9 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 /****************************************************************/
 
 const csvMetadataFile = "votes/Tous votes Constituante - Sheet1.csv"
-//const csvMetadataFile = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTEAb7WIEtHEJQcI48X-0hrtyVGk7qs5Jvd_NyCsEMqbxRTM5b0kSV3vnffaGUHQ1pxJ7hnwateoi9b/pub?gid=0&single=true&output=csv"
+//const csvMetadataFile = "https://docs.google.com/spreadsheets/d/182bHIaOVK4FtxnNndNvKYg8V1l8RWSJSF-Vbq1uP_Qc/export?format=csv&id=182bHIaOVK4FtxnNndNvKYg8V1l8RWSJSF-Vbq1uP_Qc&gid=0"
+// -> too slow, use Google API instead : see https://www.labnol.org/code/google-sheet-d3js-visualization-200608
 
-//const googleDocCallback = function () { return true; };
 
 d3.csv(csvMetadataFile).then(d => loadMetadata(d))   ////// FIXME !!!!
 
