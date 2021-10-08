@@ -203,11 +203,25 @@ const VOTE_ABST = "Abst./Enth."
 const VOTE_NOVOTE = "Aucun/Keine"
 
 // Valable seulement pour Constituante ! Partis dans l'ordre droite-gauche pour graphique
-const partisOrder = [
+var partisOrder = [
   "LES VERTS",
   "AdG",
   "ZUK-VS",
   "AC",
+  "CSPO",
+  "CVPO",
+  "PDC",
+  "VLR",
+  "UDC",
+  "SVPO"
+]
+
+var partisOrder2021 = [ // FIX2021 : ajout INDEP pour Gerhard
+  "LES VERTS",
+  "AdG",
+  "ZUK-VS",
+  "AC",
+  "INDEP",
   "CSPO",
   "CVPO",
   "PDC",
@@ -238,6 +252,14 @@ const districtsOrder = [
 
 d3.csv(csvMetadataFile).then(d => loadMetadata(d)) 
 d3.csv(csvVoteFile).then(d => {
+
+  /// FIX2021 : starting from 2021 new group ! INDEP
+  console.log(csvVoteFile)
+  if (csvVoteFile.startsWith("votes/2021")) {
+    partisOrder = partisOrder2021
+  }
+  // END FIX2021
+
   fillTables(d);
   chart("#details-party", d, (d => d.group));
   infotext("#details-gender", d); //FIXME : pas convaincant
@@ -516,7 +538,7 @@ function chart(containerId, data, groupByFunc) {
 
   xAxis.selectAll(".domain, .tick line").remove();
 
-  if(containerId=="#details-district") {
+  if(containerId=="#details-district" || containerId=="#details-party") {  /// FIX2021 : rotate axis labels also for #details-partx
     xAxis.selectAll("text")
       .attr("x", -3)
       .attr("y", 3)
