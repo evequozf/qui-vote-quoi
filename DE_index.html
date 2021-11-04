@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="index, follow" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
+<link rel="stylesheet" href="custom.css"> 
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+<title>Abstimmungen im Verfassungsrat Wallis</title>
+
+<!------------------------
+
+Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe x par "groups"
+
+----------------->
+
+</head>
+<body>
+
+<div class="banner-image">
+  <div class="banner-text">
+    <!-- <h1>🗳️ <span class="smallcaps">Qui vote quoi ? </span>🗳️</h1> -->
+    <h1>WER STIMMT WIE?<br/><span style="font-size: smaller;">Abstimmungsresultate im Verfassungsrat des Kantons Wallis</span></h1>
+  </div>
+</div>
+
+<div class="container">
+
+<p><b>Der Walliser Verfassungsrat stimmt derzeit über die Vorschläge der zehn thematischen Kommissionen ab, damit der Rat die zukünftige Walliser Verfassung schreiben kann. Aber welche Themen werden diskutiert? Wie verlaufen die Debatten? Und wer stimmt wie?
+</b></p>
+
+<p>Die Funktion dieser Website ist es, den Zugang zu den Zahlen und den <a href="https://www.vs.ch/web/constituante/seances-plenieres" class="link">offiziellen Dokumenten des Staates</a> für alle Interessierten zu erleichtern. Realisiert wurde diese Seite von Florian Evéquoz (Mitglied des Verfassungsrates und der Appel Citoyen). Zusätzlich zu den offiziellen Dokumenten hat Florian einige wichtige Abstimmungen hervorgehoben und beschrieben.  <!--<a href="mailto:florian@quivotequoi.ch" class="link">Donnez-nous votre avis!</a></p>-->
+
+<h2>Wichtige Abstimmungen</h2>
+<p>
+	Hier finden die Interessierten eine Auswahl von wichtigen Abstimmungen. Geordnet sind diese nach Kommissionen und chronologisch von den aktuellen zu den älteren Abstimmungen. Einfach auf die gewünschte Abstimmung klicken, um die dazugehörigen Details und Abstimmungsresultate zu sehen.</p>
+
+<div id="votes-importants-container"></div>
+<!--
+<ul class="votes-importants">
+	<li><a class="link" href="vote.html?affairVoteId=20200903122550">Reconnaissance des collectivités religieuses</a></li>
+	<li><a class="link" href="vote.html?affairVoteId=20200903122812">Financement des collectivités religieuses</a></li>
+</ul>
+-->
+
+<h2>Alle Abstimmungen (für die Wissbegierigen!)</h2>
+
+<p> In der nachfolgenden Tabelle sind alle Abstimmungen des Verfassungsrates aufgelistet. Chronologisch von der aktuellsten bis zur ersten Abstimmung im Rat. Diese Tabelle ist für diejenigen Personen gedacht, die besonders neugierig und gerne im Detail informiert sind bezüglich der neuen Walliser Verfassung. Zögern Sie nicht, uns ihre Erkenntnisse zukommen zulassen. Was für Schlussfolgerungen ziehen Sie aus den Abstimmungen? Welche finden Sie besonders wichtig? Welche sollten wir hervorheben? Nutzen wir unsere gemeinsame und kollektive Denkkraft.</p>
+
+<table id="list-votes"></table>
+
+</div>
+
+<div class="footer">
+  <div style="float:right"><img src="img/logo-blanc.png" width="64px" height="64px"/></div>
+    <div>Umsetzung - Florian Evéquoz, 2020-21</div>
+    <!--<div>Photo d'entête, Patrick Hofer, Flickr, CC-BY</div>-->
+    <div>Quellcode <a href="https://github.com/evequozf/qui-vote-quoi" class="link">https://github.com/evequozf/qui-vote-quoi</a></div>
+</div>
+
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    
+
+<script>
+
+/****************************************************************/
+
+const csvMetadataFile = "votes/Tous votes Constituante - Sheet1.csv"
+//const csvMetadataFile = "https://docs.google.com/spreadsheets/d/182bHIaOVK4FtxnNndNvKYg8V1l8RWSJSF-Vbq1uP_Qc/export?format=csv&id=182bHIaOVK4FtxnNndNvKYg8V1l8RWSJSF-Vbq1uP_Qc&gid=0"
+// -> too slow, use Google API instead : see https://www.labnol.org/code/google-sheet-d3js-visualization-200608
+
+
+d3.csv(csvMetadataFile).then(d => loadMetadata(d))   ////// FIXME !!!!
+
+var fulldata
+
+// Charger fichier de metadata et mettre dans datatables la liste complète des votes
+function loadMetadata(data) {
+
+  fulldata = data
+
+  var tableId = "#list-votes"
+
+  var table = d3.select(tableId);
+  table.attr("class", "stripe compact");
+
+  var thead = table.append("thead").append("tr");
+  thead.append("th").text("Session");
+  //thead.append("th").text("Principe");  // Masquer nom de l'affaire
+  thead.append("th").text("Abstimmung");
+  thead.append("th").text("Resultat");
+  thead.append("th").text("Datum und Zeit");
+
+  //create rows based on data
+  var tbody = table.append("tbody");
+  var rows = tbody.selectAll("tr")
+    .data(data)
+    .enter().append("tr");
+  rows.append("td").append("a")
+  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.text(d => d.section);
+  /*                                      // Masquer nom de l'affaire
+  rows.append("td").append("a")
+  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.text(d => d.affair);
+  */
+  rows.append("td").append("a")
+  	.attr("class","link")
+  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.text(d => d.label);
+  votes = rows.append("td").append("a")
+  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId);
+  rows.append("td").append("a")
+  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.text(d => d.startTime);
+
+  // résultat du vote
+  votes.text(d => {
+  	var total = parseInt(d.numAbst) + parseInt(d.numYes) + parseInt(d.numNo)
+	var yesPercent = Math.round(100*(d.numYes/total)*10)/10
+	var noPercent = Math.round(100*(d.numNo/total)*10)/10
+  	var txt = "";
+    //txt = d.warning ? "⚠️" : "";                   // Masquer si vote contre-intuitif
+    if (parseInt(d.numYes) > parseInt(d.numNo)) 
+  		txt += "JA ("+yesPercent+"%)"
+  	else 
+  		txt += "NEIN ("+noPercent+"%)"
+  	return txt;
+  });
+
+  votes.attr("class", d=> {
+  	if (parseInt(d.numYes) > parseInt(d.numNo)) 
+  		return "pd-color-yes"
+  	else 
+  		return "pd-color-no"
+  })
+
+  $(tableId).DataTable({
+    "paging":   true,
+    "searching":  true,
+    "info": false,
+    "order": [[ 3, "desc" ]],
+    "oLanguage": {
+          "sLengthMenu": "_MENU_ Abstimmungen anzeigen",
+          "sZeroRecords": "Keine Abstimmung",
+          "sSearch": "Suche:",
+          "oPaginate": {
+            "sFirst": "Erste Seite", // This is the link to the first page
+            "sPrevious": "Vorherige Seite", // This is the link to the previous page
+            "sNext": "Nächste Seite", // This is the link to the next page
+            "sLast": "Letzte Seite" // This is the link to the last page
+          }
+        }
+    });
+
+  // votes importants 
+  //fillVotesImportants("#votes-importants-container", data.filter(v => v.affair)) // tous les votes en un seul bloc
+  // une sous-section par 'section + date'
+  var sections = d3.nest().key(d => d.section).rollup().entries(data)
+  for (var i = 0; i < sections.length; i++) {
+    fillVotesImportants("#votes-importants-container", 
+      data.filter(v => (v.section==sections[i].key) && v.affair)) // fill "votes importants" with votes from a given section where "v.affair" is defined
+  }
+
+   /* hr in between list items */
+  $( "<hr/>" ).insertAfter( "ul.votes-importants li:not(:last-child)" ); //"ul#votes-importants li:not(:last-child)"
+}
+
+
+ /* Création liste des votes importants de la table 'votes' à mettre dans le 'ul' pour chaque 'section' dans répertoire de votes CSV*/
+function fillVotesImportants(containerID, votes) {
+  if(votes.length == 0) return;
+  //console.log(votes[0].startTime);
+  const utcDate = votes[0].startTime.split(" ")[0]+"T"+votes[0].startTime.split(" ")[1]+"Z" //reformat date to ISO UTC
+  const datestring = new Date(utcDate).toLocaleDateString("de-DE", 
+    { /*weekday: 'long',*/year: 'numeric', month: 'long', day: 'numeric' }); // (jeudi) 3 septembre 2020
+  d3.select(containerID)
+    .append("h3")
+    .attr("id",votes[0].section) // only works in HTML 5
+    .html(votes[0].section+" <br/><span class=\"date\">"+datestring+"</span>")
+  var ul = d3.select(containerID)
+    .append("ul")
+    .attr("class","votes-importants")
+  var lis = ul.selectAll("li")
+    .data(votes)
+    .enter()
+    .append("li")
+      .append("a")
+      //.attr("class","nolink")
+      .attr("href",v => "vote.html?affairVoteId="+v.affairVoteId+"&voteDescription=true")
+      .text(v => v.affair)
+}
+
+
+</script>
+</body>
+</html>
