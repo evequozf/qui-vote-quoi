@@ -45,6 +45,16 @@ body {
   margin-bottom: 3em;
 }
 
+.banner-text a {
+	text-decoration: none;
+	color:  white;
+}
+
+.banner-text a.selected {
+	font-weight: bolder;
+	//opacity:0.5;
+}
+
 .footer {
 	color: white;
 	padding: 34px;
