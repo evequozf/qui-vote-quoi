@@ -25,12 +25,17 @@ ajouter voteDescription=true
 <div class="banner-image">
   <div class="banner-text">
     <!-- <h1>🗳️ <span class="smallcaps">Qui vote quoi ? </span>🗳️</h1> -->
-   <h1>WER STIMMT WIE?<br/><span style="font-size: smaller;">Abstimmungsresultate im Verfassungsrat des Kantons Wallis</span></h1>
+   <div class="right-banner">
+      <a href="DE_index.html"> <h1>WER STIMMT WIE?<br/><span style="font-size: smaller;">Abstimmungsresultate im Verfassungsrat des Kantons Wallis</span></h1></a>
+    </div>
+    <div class="left-banner">
+      <a href="index.html" id="language-fr">FR</a> | <a href="DE_index.html" class="selected" id="language-de">DE</a>
+    </div>
   </div>
 </div>
 
 <div class="header">
-  <div class="back"><a class="link" href="index.html"> &lt; Zurück zur Liste der Abstimmungen</a></div>
+  <div class="back"><a class="link" href="DE_index.html"> &lt; Zurück zur Liste der Abstimmungen</a></div>
   <div class="navigate-votes"><a class="link" id="previousVote" href="#"> &lt; Vorherige Abstimmung</a> | <a class="link" id="nextVote" href="#">Nächste Abstimmung &gt; </a></div>
 </div>
 
@@ -136,16 +141,16 @@ ajouter voteDescription=true
             </div>
        	
 
-	<div class="chart" id="details-party"><h2>Abstimmungsverhalten der Fraktion</h2></div>
+	<div class="chart" id="details-party"><h2>Verhalten der Fraktion</h2></div><!-- Abstimmungsverhalten -->
 
 
-  <div class="chart" id="details-gender"><h2>Abstimmungsverhalten der Geschlechter</h2></div>
+  <div class="chart" id="details-gender"><h2>Verhalten der Geschlechter</h2></div>
 
 
-  <div class="chart" id="details-age"><h2>Abstimmungsverhalten der Altersklassen</h2></div>
+  <div class="chart" id="details-age"><h2>Verhalten der Altersklassen</h2></div>
 
 
-  <div class="chart" id="details-district"><h2>Abstimmungsverhalten der Bezirke</h2></div>
+  <div class="chart" id="details-district"><h2>Verhalten der Bezirke</h2></div>
 
 <div class="clearfix"> </div>
 
@@ -191,9 +196,14 @@ ajouter voteDescription=true
 const urlParams = new URLSearchParams(window.location.search);
 const AFFAIRVOTEID = urlParams.get('affairVoteId');
 const VOTEDESCRIPTION = urlParams.get('voteDescription');
+
 const csvMetadataFile = "votes/Tous votes Constituante - Sheet1.csv"
-//const csvMetadataFile = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTEAb7WIEtHEJQcI48X-0hrtyVGk7qs5Jvd_NyCsEMqbxRTM5b0kSV3vnffaGUHQ1pxJ7hnwateoi9b/pub?gid=0&single=true&output=csv"
 const csvVoteFile = "votes/"+AFFAIRVOTEID+".csv"
+
+//2021 ---- fetch votes explicitely from quivotequoi.ch ?
+//const csvMetadataFile = "www.quivotequoi.ch/votes/Tous votes Constituante - Sheet1.csv"
+//const csvVoteFile = "www.quivotequoi.ch/votes/"+AFFAIRVOTEID+".csv"
+
 
 // valeur du vote dans fichier CSV
 const VOTE_OUI = "Oui/Ja"
@@ -248,9 +258,32 @@ const districtsOrder = [
 
 //console.log(urlParams)
 
+// ALLEMAND - changer les champs 
+// champs concernés : DE_meaningYesText DE_meaningNoText  DE_affair DE_section  DE_note DE_warning  DE_attachment
+function convertGermanFields(row) {
+  row.meaningYesText = row.DE_meaningYesText;
+  row.meaningNoText = row.DE_meaningNoText;  
+  row.affair = row.DE_affair;
+  row.section = row.DE_section;
+  row.note = row.DE_note; 
+  row.warning = row.DE_warning;  
+  row.attachment = row.DE_attachment
+  row.meaningYes == "Zustimmen"
+  row.meaningNo = "Ablehnen" 
+  return row;
+}
 
-d3.csv(csvMetadataFile).then(d => loadMetadata(d)) 
-d3.csv(csvVoteFile).then(d => {
+// ALLEMAND - changer les champs 
+function convertGermanFieldsVotes(row) {
+  row.Genre = (row.Genre == "H") ? "M" : row.Genre;
+  return row;
+}
+// ALLEMAND - changer les champs
+// ALLEMAND - changer les champs
+
+
+d3.csv(csvMetadataFile, convertGermanFields).then(d => loadMetadata(d)) 
+d3.csv(csvVoteFile, convertGermanFieldsVotes).then(d => {
 
   /// FIX2021 : starting from 2021 new group ! INDEP
   console.log(csvVoteFile)
@@ -323,6 +356,14 @@ function loadMetadata(d) {
       +"?affairVoteId="+nextVoteId
       + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
 
+  // set languages links
+  d3.select("#language-fr").attr("href","vote.html"
+      +"?affairVoteId="+AFFAIRVOTEID
+      + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
+  d3.select("#language-de").attr("href","abstimmung.html"
+      +"?affairVoteId="+AFFAIRVOTEID
+      + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
+
 
   /* Header page title */
   if (vote.label) {
@@ -331,8 +372,8 @@ function loadMetadata(d) {
     /* Page title */
     d3.select("h1#affair").text(vote.label)
     /* Signification oui-non */
-    d3.select("#pd-vb-sign-yes").text("Voter OUI signifie : '"+vote.meaningYes+"'")
-    d3.select("#pd-vb-sign-no").text("Voter NON signifie : '"+vote.meaningNo+"'")
+    d3.select("#pd-vb-sign-yes").text("JA stimmen bedeutet : '"+vote.meaningYes+"'")
+    d3.select("#pd-vb-sign-no").text("NEIN stimmen bedeutet : '"+vote.meaningNo+"'")
   }
 
   /* If ?voteDescription=true in URL */
@@ -355,8 +396,8 @@ function loadMetadata(d) {
     d3.select("#pd-vb-sign-no-details").html(vote.meaningNoText)
 
     /* Signification oui-non */
-    d3.select("#pd-vb-sign-yes").text("Voter OUI signifie : " + (vote.meaningYesText ? "" : ("'"+vote.meaningYes) +"'"))
-    d3.select("#pd-vb-sign-no").text("Voter NON signifie : " + (vote.meaningNoText ? "" : ("'"+vote.meaningNo) +"'"))
+    d3.select("#pd-vb-sign-yes").text("JA stimmen bedeutet: " + (vote.meaningYesText ? "" : ("'"+vote.meaningYes) +"'"))
+    d3.select("#pd-vb-sign-no").text("NEIN stimmen bedeutet: " + (vote.meaningNoText ? "" : ("'"+vote.meaningNo) +"'"))
   }
 
   
@@ -439,9 +480,9 @@ function infotext(containerId, data) {
     .append("div").attr("class","infotext");
   var table = div.append("table");
   var thead = table.append("thead").append("tr");
-  thead.append("th").text("Groupe");
-  thead.append("th").text("Femmes");
-  thead.append("th").text("Hommes");
+  thead.append("th").text("Fraktion");
+  thead.append("th").text("Frauen");
+  thead.append("th").text("Männer");
   var trs = table.append("tbody").selectAll("tr").data(n).enter().append("tr")
   trs.html(d => {
       var f = 0, h=0;
@@ -612,10 +653,10 @@ function fillTable(tableId, data) {
 	table.attr("class", "stripe compact")
   
 	var thead = table.append("thead").append("tr");
-		thead.append("th").text("Nom");
-		thead.append("th").text("Groupe");
-    thead.append("th").text("District");
-		thead.append("th").html("Vote");
+		thead.append("th").text("Name");
+		thead.append("th").text("Fraktion");
+    thead.append("th").text("Bezirk");
+		thead.append("th").html("Abstimmung");
 
 	//create rows based on data
 	var tbody = table.append("tbody");
@@ -633,7 +674,7 @@ function fillTable(tableId, data) {
         "searching": 	false,
         "order": [[ 1, "asc" ]],
         "oLanguage": {
-          "sSearch": "Rechercher:"
+          "sSearch": "Suchen:"
         }
     });
 }

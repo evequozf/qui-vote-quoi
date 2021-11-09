@@ -23,7 +23,12 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 <div class="banner-image">
   <div class="banner-text">
     <!-- <h1>🗳️ <span class="smallcaps">Qui vote quoi ? </span>🗳️</h1> -->
-    <h1>WER STIMMT WIE?<br/><span style="font-size: smaller;">Abstimmungsresultate im Verfassungsrat des Kantons Wallis</span></h1>
+    <div class="right-banner">
+      <a href="DE_index.html"> <h1>WER STIMMT WIE?<br/><span style="font-size: smaller;">Abstimmungsresultate im Verfassungsrat des Kantons Wallis</span></h1></a>
+    </div>
+    <div class="left-banner">
+      <a href="index.html" id="language-fr">FR</a> | <a class="selected" href="DE_index.html" id="language-de">DE</a>
+    </div>
   </div>
 </div>
 
@@ -41,8 +46,8 @@ Pour réutilisation GC -> enlever "partisOrder" et remplacer le domain de l'axe 
 <div id="votes-importants-container"></div>
 <!--
 <ul class="votes-importants">
-	<li><a class="link" href="vote.html?affairVoteId=20200903122550">Reconnaissance des collectivités religieuses</a></li>
-	<li><a class="link" href="vote.html?affairVoteId=20200903122812">Financement des collectivités religieuses</a></li>
+	<li><a class="link" href="abstimmung.html??affairVoteId=20200903122550">Reconnaissance des collectivités religieuses</a></li>
+	<li><a class="link" href="abstimmung.html??affairVoteId=20200903122812">Financement des collectivités religieuses</a></li>
 </ul>
 -->
 
@@ -76,7 +81,22 @@ const csvMetadataFile = "votes/Tous votes Constituante - Sheet1.csv"
 // -> too slow, use Google API instead : see https://www.labnol.org/code/google-sheet-d3js-visualization-200608
 
 
-d3.csv(csvMetadataFile).then(d => loadMetadata(d))   ////// FIXME !!!!
+// ALLEMAND - changer les champs 
+// champs concernés : DE_meaningYesText DE_meaningNoText  DE_affair DE_section  DE_note DE_warning  DE_attachment
+function convertGermanFields(row) {
+  row.meaningYesText = row.DE_meaningYesText;
+  row.meaningNoText = row.DE_meaningNoText;  
+  row.affair = row.DE_affair;
+  row.section = row.DE_section;
+  row.note = row.DE_note; 
+  row.warning = row.DE_warning;  
+  row.attachment = row.DE_attachment
+  return row;
+}
+// ALLEMAND - changer les champs
+
+
+d3.csv(csvMetadataFile, convertGermanFields).then(d => loadMetadata(d))   ////// FIXME !!!!
 
 var fulldata
 
@@ -103,21 +123,21 @@ function loadMetadata(data) {
     .data(data)
     .enter().append("tr");
   rows.append("td").append("a")
-  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.attr("href", d => "abstimmung.html?affairVoteId="+d.affairVoteId)
   	.text(d => d.section);
   /*                                      // Masquer nom de l'affaire
   rows.append("td").append("a")
-  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.attr("href", d => "abstimmung.html??affairVoteId="+d.affairVoteId)
   	.text(d => d.affair);
   */
   rows.append("td").append("a")
   	.attr("class","link")
-  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.attr("href", d => "abstimmung.html?affairVoteId="+d.affairVoteId)
   	.text(d => d.label);
   votes = rows.append("td").append("a")
-  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId);
+  	.attr("href", d => "abstimmung.html?affairVoteId="+d.affairVoteId);
   rows.append("td").append("a")
-  	.attr("href", d => "vote.html?affairVoteId="+d.affairVoteId)
+  	.attr("href", d => "abstimmung.html?affairVoteId="+d.affairVoteId)
   	.text(d => d.startTime);
 
   // résultat du vote
@@ -193,7 +213,7 @@ function fillVotesImportants(containerID, votes) {
     .append("li")
       .append("a")
       //.attr("class","nolink")
-      .attr("href",v => "vote.html?affairVoteId="+v.affairVoteId+"&voteDescription=true")
+      .attr("href",v => "abstimmung.html?affairVoteId="+v.affairVoteId+"&voteDescription=true")
       .text(v => v.affair)
 }
 

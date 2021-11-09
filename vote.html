@@ -25,7 +25,12 @@ ajouter voteDescription=true
 <div class="banner-image">
   <div class="banner-text">
     <!-- <h1>🗳️ <span class="smallcaps">Qui vote quoi ? </span>🗳️</h1> -->
-    <h1>QUI VOTE QUOI ?<br/><span style="font-size: smaller;">Résultats des votes de la Constituante valaisanne</span></h1>
+    <div class="right-banner">
+      <a href="index.html"><h1>QUI VOTE QUOI ?<br/><span style="font-size: smaller;">Résultats des votes de la Constituante valaisanne</span></h1></a>
+    </div>
+    <div class="left-banner">
+      <a href="index.html" class="selected" id="language-fr">FR</a> | <a href="DE_index.html" id="language-de">DE</a>
+    </div>
   </div>
 </div>
 
@@ -324,6 +329,13 @@ function loadMetadata(d) {
       +"?affairVoteId="+nextVoteId
       + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
 
+// set languages links
+  d3.select("#language-fr").attr("href","vote.html"
+      +"?affairVoteId="+AFFAIRVOTEID
+      + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
+  d3.select("#language-de").attr("href","abstimmung.html"
+      +"?affairVoteId="+AFFAIRVOTEID
+      + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
 
   /* Header page title */
   if (vote.label) {
