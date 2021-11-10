@@ -29,7 +29,7 @@ ajouter voteDescription=true
       <a href="index.html"><h1>QUI VOTE QUOI ?<br/><span style="font-size: smaller;">Résultats des votes de la Constituante valaisanne</span></h1></a>
     </div>
     <div class="left-banner">
-      <a href="index.html" class="selected" id="language-fr">FR</a> | <a href="DE_index.html" id="language-de">DE</a>
+      <a class="selected" href="http://www.quivotequoi.ch/index.html" id="language-fr">FR</a> | <a href="http://www.werstimmtwie.ch/index.html" id="language-de">DE</a>
     </div>
   </div>
 </div>
@@ -192,6 +192,9 @@ ajouter voteDescription=true
 
 //AFFAIRVOTEID = "20200904113904"
 
+QUIVOTEQUOI_WEBSITE = "http://www.quivotequoi.ch/"
+WERSTIMMTWIE_WEBSITE = "http://www.werstimmtwie.ch/"
+
 //20200903154222
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -330,10 +333,10 @@ function loadMetadata(d) {
       + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
 
 // set languages links
-  d3.select("#language-fr").attr("href","vote.html"
+  d3.select("#language-fr").attr("href",QUIVOTEQUOI_WEBSITE+"vote.html"
       +"?affairVoteId="+AFFAIRVOTEID
       + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
-  d3.select("#language-de").attr("href","abstimmung.html"
+  d3.select("#language-de").attr("href",WERSTIMMTWIE_WEBSITE+"abstimmung.html"
       +"?affairVoteId="+AFFAIRVOTEID
       + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
 
