@@ -414,7 +414,7 @@ function loadMetadata(d) {
       .attr("class","link refdoc")
       .text(vote.attachment);
   d3.selectAll("a.link.refdoc")
-      .attr("href","attachments/"+vote.attachment); // also link in "note" introductory text
+      .attr("href",QUIVOTEQUOI_WEBSITE+"attachments/"+vote.attachment); // also link in "note" introductory text
   
   // Métadata - only in "lower" metadata
   meta = d3.select(".vote-metadata.lower")
