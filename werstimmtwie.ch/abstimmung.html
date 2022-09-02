@@ -242,6 +242,19 @@ var partisOrder2021 = [ // FIX2021 : ajout INDEP pour Gerhard
   "SVPO"
 ]
 
+var partisOrder2022 = [ // FIX2022 : chg noms des partis
+  "LES VERTS",
+  "PS-GC",
+  "ZUK-VS",
+  "AC",
+  "CSPO",
+  "Die Mitte Oberwallis",
+  "Le Centre",
+  "VLR",
+  "UDC",
+  "SVPO"
+]
+
 const districtsOrder = [
   "Goms",
   "Brig",
@@ -288,12 +301,14 @@ function convertGermanFieldsVotes(row) {
 d3.csv(csvMetadataFile, convertGermanFields).then(d => loadMetadata(d)) 
 d3.csv(csvVoteFile, convertGermanFieldsVotes).then(d => {
 
-  /// FIX2021 : starting from 2021 new group ! INDEP
+  /// FIX2021 - FIX2022 : starting from 2021 new group ! INDEP + 2022 new group names
   console.log(csvVoteFile)
   if (csvVoteFile.startsWith(QUIVOTEQUOI_WEBSITE+"votes/2021")) {
     partisOrder = partisOrder2021
-  }
-  // END FIX2021
+  } else if (csvVoteFile.startsWith(QUIVOTEQUOI_WEBSITE+"votes/2022")) {
+    partisOrder = partisOrder2022
+  } 
+  // END FIX2021 - FIX2022
 
   fillTables(d);
   chart("#details-party", d, (d => d.group));

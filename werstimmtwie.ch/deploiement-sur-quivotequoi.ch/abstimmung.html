@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="index, follow" />
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"> 
-<link rel="stylesheet" href="custom.css"> 
+<link rel="stylesheet" href="http://www.quivotequoi.ch/custom.css"> 
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 
 <title>Verfassungsrat: Abstimmungsresultat</title>
@@ -26,16 +26,16 @@ ajouter voteDescription=true
   <div class="banner-text">
     <!-- <h1>🗳️ <span class="smallcaps">Qui vote quoi ? </span>🗳️</h1> -->
    <div class="right-banner">
-      <a href="DE_index.html"> <h1>WER STIMMT WIE?<br/><span style="font-size: smaller;">Abstimmungsresultate im Verfassungsrat des Kantons Wallis</span></h1></a>
+      <a href="http://www.werstimmtwie.ch/index.html"> <h1>WER STIMMT WIE?<br/><span style="font-size: smaller;">Abstimmungsresultate im Verfassungsrat des Kanton Wallis</span></h1></a>
     </div>
     <div class="left-banner">
-      <a href="index.html" id="language-fr">FR</a> | <a href="DE_index.html" class="selected" id="language-de">DE</a>
+      <a href="http://www.quivotequoi.ch/index.html" id="language-fr">FR</a> | <a class="selected" href="http://www.werstimmtwie.ch/index.html" id="language-de">DE</a>
     </div>
   </div>
 </div>
 
 <div class="header">
-  <div class="back"><a class="link" href="DE_index.html"> &lt; Zurück zur Liste der Abstimmungen</a></div>
+  <div class="back"><a class="link" href="index.html"> &lt; Zurück zur Liste der Abstimmungen</a></div>
   <div class="navigate-votes"><a class="link" id="previousVote" href="#"> &lt; Vorherige Abstimmung</a> | <a class="link" id="nextVote" href="#">Nächste Abstimmung &gt; </a></div>
 </div>
 
@@ -191,14 +191,17 @@ ajouter voteDescription=true
 
 //AFFAIRVOTEID = "20200904113904"
 
+QUIVOTEQUOI_WEBSITE = "http://www.quivotequoi.ch/"
+WERSTIMMTWIE_WEBSITE = "http://www.werstimmtwie.ch/"
+
 //20200903154222
 
 const urlParams = new URLSearchParams(window.location.search);
 const AFFAIRVOTEID = urlParams.get('affairVoteId');
 const VOTEDESCRIPTION = urlParams.get('voteDescription');
 
-const csvMetadataFile = "votes/Tous votes Constituante - Sheet1.csv"
-const csvVoteFile = "votes/"+AFFAIRVOTEID+".csv"
+const csvMetadataFile = QUIVOTEQUOI_WEBSITE+"votes/Tous votes Constituante - Sheet1.csv"
+const csvVoteFile = QUIVOTEQUOI_WEBSITE+"votes/"+AFFAIRVOTEID+".csv"
 
 //2021 ---- fetch votes explicitely from quivotequoi.ch ?
 //const csvMetadataFile = "www.quivotequoi.ch/votes/Tous votes Constituante - Sheet1.csv"
@@ -234,6 +237,20 @@ var partisOrder2021 = [ // FIX2021 : ajout INDEP pour Gerhard
   "CSPO",
   "CVPO",
   "PDC",
+  "VLR",
+  "UDC",
+  "SVPO"
+]
+
+var partisOrder2022 = [ // FIX2022 : chg noms des partis
+  "LES VERTS",
+  "PS-GC",
+  "ZUK-VS",
+  "AC",
+  "INDEP",
+  "CSPO",
+  "Die Mitte Oberwallis",
+  "Le Centre",
   "VLR",
   "UDC",
   "SVPO"
@@ -285,12 +302,14 @@ function convertGermanFieldsVotes(row) {
 d3.csv(csvMetadataFile, convertGermanFields).then(d => loadMetadata(d)) 
 d3.csv(csvVoteFile, convertGermanFieldsVotes).then(d => {
 
-  /// FIX2021 : starting from 2021 new group ! INDEP
+  /// FIX2021 - FIX2022 : starting from 2021 new group ! INDEP + 2022 new group names
   console.log(csvVoteFile)
-  if (csvVoteFile.startsWith("votes/2021")) {
+  if (csvVoteFile.startsWith(QUIVOTEQUOI_WEBSITE+"votes/2021")) {
     partisOrder = partisOrder2021
-  }
-  // END FIX2021
+  } else if (csvVoteFile.startsWith(QUIVOTEQUOI_WEBSITE+"votes/2022")) {
+    partisOrder = partisOrder2022
+  } 
+  // END FIX2021 - FIX2022
 
   fillTables(d);
   chart("#details-party", d, (d => d.group));
@@ -357,10 +376,10 @@ function loadMetadata(d) {
       + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
 
   // set languages links
-  d3.select("#language-fr").attr("href","vote.html"
+  d3.select("#language-fr").attr("href",QUIVOTEQUOI_WEBSITE+"vote.html"
       +"?affairVoteId="+AFFAIRVOTEID
       + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
-  d3.select("#language-de").attr("href","abstimmung.html"
+  d3.select("#language-de").attr("href",WERSTIMMTWIE_WEBSITE+"abstimmung.html"
       +"?affairVoteId="+AFFAIRVOTEID
       + (VOTEDESCRIPTION ? "&voteDescription=true" : ""))
 
@@ -411,7 +430,7 @@ function loadMetadata(d) {
       .attr("class","link refdoc")
       .text(vote.attachment);
   d3.selectAll("a.link.refdoc")
-      .attr("href","attachments/"+vote.attachment); // also link in "note" introductory text
+      .attr("href",QUIVOTEQUOI_WEBSITE+"attachments/"+vote.attachment); // also link in "note" introductory text
   
   // Métadata - only in "lower" metadata
   meta = d3.select(".vote-metadata.lower")
@@ -489,7 +508,7 @@ function infotext(containerId, data) {
       d.values.forEach(v => {
         if (v.key=="F")
           f = v.value;
-        else if (v.key=="H")
+        else if (v.key=="M")
           h = v.value;
       });
       return "<td>"+d.key+"</td><td>"+f+"</td><td>"+h+"</td>";
