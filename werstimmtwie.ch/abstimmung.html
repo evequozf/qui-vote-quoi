@@ -305,7 +305,7 @@ d3.csv(csvVoteFile, convertGermanFieldsVotes).then(d => {
   console.log(csvVoteFile)
   if (csvVoteFile.startsWith(QUIVOTEQUOI_WEBSITE+"votes/2021")) {
     partisOrder = partisOrder2021
-  } else if (csvVoteFile.startsWith("votes/2022") || csvVoteFile.startsWith("votes/2023"))  {
+  } else if (csvVoteFile.startsWith(QUIVOTEQUOI_WEBSITE+"votes/2022") || csvVoteFile.startsWith(QUIVOTEQUOI_WEBSITE+"votes/2023"))  {
     partisOrder = partisOrder2022
   } 
   // END FIX2021 - FIX2022
